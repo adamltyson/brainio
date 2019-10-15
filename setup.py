@@ -10,6 +10,7 @@ requirements = [
     "natsort",
     "psutil",
     "slurmio",
+    "nibabel >= 2.1.0",
 ]
 
 setup(
