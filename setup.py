@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 requirements = [
     "numpy",
-    "scikit-image",
+    "scikit-image==0.15.0",
     "tifffile",
     "pynrrd",
     "nibabel",
@@ -18,6 +18,13 @@ setup(
     version="0.0.1",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
+    extras_require={
+        "dev": [
+            "black",
+            "pytest-cov",
+            "pytest",
+        ]
+    },
     python_requires=">=3.6",
     packages=find_packages(),
     include_package_data=True,
@@ -35,4 +42,6 @@ setup(
     ],
     zip_safe=False,
 )
+
+
 
