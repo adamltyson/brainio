@@ -1,2 +1,2 @@
 # brainio
-Loading and saving of braim imaging data.
+Loading and saving of brain imaging data.
