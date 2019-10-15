@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 requirements = [
     "numpy",
-    "scikit-image==0.15.0",
+    "scikit-image",
     "tifffile",
     "pynrrd",
     "nibabel",
@@ -15,7 +15,7 @@ requirements = [
 
 setup(
     name="brainio",
-    version="0.0.1",
+    version="0.0.2",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
     extras_require={"dev": ["black", "pytest-cov", "pytest"]},
