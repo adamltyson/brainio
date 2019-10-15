@@ -44,10 +44,7 @@ def get_sorted_file_paths(file_path, file_extension=None):
     return file_path
 
 
-def get_num_processes(
-    min_free_cpu_cores=2,
-    n_max_processes=None,
-):
+def get_num_processes(min_free_cpu_cores=2, n_max_processes=None):
     """
     Determine how many CPU cores to use, based on a minimum number of cpu cores
     to leave free, and an optional max number of processes.
@@ -68,8 +65,7 @@ def get_num_processes(
     try:
         os.environ["SLURM_JOB_ID"]
         n_processes = (
-                slurmio.SlurmJobParameters().allocated_cores
-                - min_free_cpu_cores
+            slurmio.SlurmJobParameters().allocated_cores - min_free_cpu_cores
         )
     except KeyError:
         n_processes = psutil.cpu_count() - min_free_cpu_cores
