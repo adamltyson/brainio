@@ -52,13 +52,7 @@ def get_num_processes(min_free_cpu_cores=2, n_max_processes=None):
     Cluster computing aware for the SLURM job scheduler, and not yet
     implemented for other environments.
     :param int min_free_cpu_cores: How many cpu cores to leave free
-    :param float ram_needed_per_process: Memory requirements per process. Set
-    this to ensure that the number of processes isn't too high.
-    :param float fraction_free_ram: Fraction of the ram to ensure stays free
-    regardless of the current program.
     :param int n_max_processes: Maximum number of processes
-    :param float max_ram_usage: Maximum amount of RAM (in bytes)
-    to use (allthough available may be lower)
     :return: Number of processes to
     """
     logging.debug("Determining the maximum number of CPU cores to use")
