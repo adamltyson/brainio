@@ -64,6 +64,8 @@ def get_num_processes(min_free_cpu_cores=2, n_max_processes=None):
     except KeyError:
         n_processes = psutil.cpu_count() - min_free_cpu_cores
 
-    n_processes = min(n_processes, n_max_processes)
+    if n_max_processes is not None:
+        n_processes = min(n_processes, n_max_processes)
+
     logging.debug(f"Setting number of processes to: {n_processes}")
     return int(n_processes)
