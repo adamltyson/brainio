@@ -15,7 +15,7 @@ requirements = [
 
 setup(
     name="brainio",
-    version="0.0.7",
+    version="0.0.8",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
     extras_require={"dev": ["black", "pytest-cov", "pytest", "coveralls"]},
