@@ -309,7 +309,7 @@ def threaded_load_from_sequence(
             y_scaling_factor,
         )
         stacks.append(process)
-    stack = np.dstack((s.result() for s in stacks))
+    stack = np.dstack([s.result() for s in stacks])
     return stack
 
 
