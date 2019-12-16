@@ -11,6 +11,7 @@ requirements = [
     "psutil",
     "slurmio",
     "nibabel >= 2.1.0",
+    "luddite"
 ]
 
 setup(
