@@ -11,7 +11,7 @@ requirements = [
     "psutil",
     "slurmio",
     "nibabel >= 2.1.0",
-    "luddite"
+    "luddite",
 ]
 
 setup(
@@ -19,7 +19,15 @@ setup(
     version="0.0.9",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
-    extras_require={"dev": ["black", "pytest-cov", "pytest", "coveralls"]},
+    extras_require={
+        "dev": [
+            "black",
+            "pytest-cov",
+            "pytest",
+            "coveralls",
+            "coverage<=4.5.4",
+        ]
+    },
     python_requires=">=3.6",
     packages=find_packages(),
     include_package_data=True,
