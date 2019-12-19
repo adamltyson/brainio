@@ -295,12 +295,15 @@ def threaded_load_from_sequence(
     pool = ProcessPoolExecutor(max_workers=n_processes)
     # FIXME: should detect and switch to other method
 
-    n_paths_per_subsequence = math.floor(len(paths_sequence) / n_processes)
+    n_paths_per_subsequence = math.ceil(len(paths_sequence) / n_processes)
     for i in range(n_processes):
         start_idx = i * n_paths_per_subsequence
-        end_idx = start_idx + n_paths_per_subsequence
-        end_idx = end_idx if end_idx < len(paths_sequence) else -1
-        sub_paths = paths_sequence[start_idx:end_idx]
+        if start_idx >= len(paths_sequence):
+            break
+        else:
+            end_idx = start_idx + n_paths_per_subsequence
+            end_idx = end_idx if end_idx < len(paths_sequence) else -1
+            sub_paths = paths_sequence[start_idx:end_idx]
 
         process = pool.submit(
             load_from_paths_sequence,
