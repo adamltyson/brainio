@@ -9,7 +9,6 @@ stored in or a file containing a sorted list of file paths
 
 import os
 import math
-import psutil
 import nrrd
 import logging
 import tifffile
@@ -22,55 +21,11 @@ from tqdm import tqdm
 from natsort import natsorted
 from concurrent.futures import ProcessPoolExecutor
 
-from . import tools
-
+from .utils import check_mem, scale_z, get_sorted_file_paths, get_num_processes
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import nibabel as nib
-
-
-class BrainIoLoadException(Exception):
-    pass
-
-
-def check_mem(img_byte_size, n_imgs):
-    """
-    Check how much memory is available on the system and compares it to the
-    size the stack specified by img_byte_size and n_imgs would take
-    once loaded
-
-    Raises an error in case memory is insufficient to load that stack
-
-    :param int img_byte_size: The size in bytes of an individual image plane
-    :param int n_imgs: The number of image planes to load
-    :raises: BrainLoadException if not enough memory is available
-    """
-    total_size = img_byte_size * n_imgs
-    free_mem = psutil.virtual_memory().available
-    if total_size >= free_mem:
-        raise BrainIoLoadException(
-            "Not enough memory on the system to complete loading operation"
-            "Needed {}, only {} available.".format(total_size, free_mem)
-        )
-
-
-def scale_z(volume, scaling_factor, verbose=False):
-    """
-    Scale the given brain along the z dimension
-
-    :param np.ndarray volume: A brain typically as a numpy array
-    :param float scaling_factor:
-    :param bool verbose:
-    :return:
-    """
-    if verbose:
-        print("Scaling z dimension")
-    volume = np.swapaxes(volume, 1, 2)
-    volume = transform.rescale(
-        volume, (1, scaling_factor, 1), preserve_range=True, multichannel=False
-    )
-    return np.swapaxes(volume, 1, 2)
 
 
 # ######################## INPUT METHODS ####################
@@ -289,7 +244,7 @@ def threaded_load_from_sequence(
     :rtype: np.ndarray
     """
     stacks = []
-    n_processes = tools.get_num_processes(min_free_cpu_cores=n_free_cpus)
+    n_processes = get_num_processes(min_free_cpu_cores=n_free_cpus)
 
     # WARNING: will not work with interactive interpreter.
     pool = ProcessPoolExecutor(max_workers=n_processes)
@@ -405,9 +360,7 @@ def get_size_image_from_file_paths(file_path, file_extension="tif"):
     if isinstance(file_path, Path):
         file_path = str(file_path)
 
-    img_paths = tools.get_sorted_file_paths(
-        file_path, file_extension=file_extension
-    )
+    img_paths = get_sorted_file_paths(file_path, file_extension=file_extension)
     z_shape = len(img_paths)
 
     logging.debug(
