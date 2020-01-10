@@ -36,6 +36,7 @@ def load_any(
     z_scaling_factor=1.0,
     load_parallel=False,
     sort_input_file=False,
+    as_numpy=False,
     verbose=False,
     n_free_cpus=2,
 ):
@@ -58,6 +59,8 @@ def load_any(
         for faster data loading
     :param bool sort_input_file: If set to true and the input is a filepaths
         file, it will be naturally sorted
+    :param bool as_numpy: Whether to convert the image to a numpy array in
+        memory (rather than a memmap). Only relevant for .nii files.
     :param bool verbose: Print more information about the process
     :param int n_free_cpus: Number of cpu cores to leave free.
     :return: The loaded brain
@@ -93,7 +96,7 @@ def load_any(
         img = load_nrrd(src_path)
     elif src_path.endswith((".nii", ".nii.gz")):
         logging.debug("Data type is: NifTI")
-        img = load_nii(src_path, as_array=True)
+        img = load_nii(src_path, as_array=True, as_numpy=as_numpy)
     else:
         raise NotImplementedError(
             "Could not guess data type for path {}".format(src_path)
@@ -127,18 +130,24 @@ def load_img_stack(stack_path):
     return stack
 
 
-def load_nii(src_path, as_array=False):
+def load_nii(src_path, as_array=False, as_numpy=False):
     """
     Load a brain from a nifti file
 
     :param str src_path: The path to the nifty file on the filesystem
     :param bool as_array: Whether to convert the brain to a numpy array of
         keep it as nifty object
+    :param bool as_numpy: Whether to convert the image to a numpy array in
+        memory (rather than a memmap)
     :return: The loaded brain (format depends on the above flag)
     """
     nii_img = nib.load(src_path)
     if as_array:
-        return nii_img.get_data()
+        image = nii_img.get_data()
+        if as_numpy:
+            image = np.array(image)
+
+        return image
     else:
         return nii_img
 
