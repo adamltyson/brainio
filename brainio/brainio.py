@@ -66,7 +66,7 @@ def load_any(
     :return: The loaded brain
     :rtype: np.ndarray
     """
-    # TODO: accept pathlib objects
+    src_path = str(src_path)
 
     if os.path.isdir(src_path):
         logging.debug("Data type is: directory of files")
@@ -114,6 +114,7 @@ def load_nrrd(src_path):
     :return: The loaded brain array
     :rtype: np.ndarray
     """
+    src_path = str(src_path)
     stack, _ = nrrd.read(src_path)
     return stack
 
@@ -126,6 +127,7 @@ def load_img_stack(stack_path):
     :return: The loaded brain array
     :rtype: np.ndarray
     """
+    stack_path = str(stack_path)
     stack = tifffile.imread(stack_path)
     return stack
 
@@ -141,6 +143,7 @@ def load_nii(src_path, as_array=False, as_numpy=False):
         memory (rather than a memmap)
     :return: The loaded brain (format depends on the above flag)
     """
+    src_path = str(src_path)
     nii_img = nib.load(src_path)
     if as_array:
         image = nii_img.get_data()
@@ -179,6 +182,7 @@ def load_from_folder(
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
+    src_folder = str(src_folder)
     paths = [
         os.path.join(src_folder, fname)
         for fname in sorted(os.listdir(src_folder))
@@ -220,6 +224,7 @@ def load_img_sequence(
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
+    img_sequence_file_path = str(img_sequence_file_path)
     with open(img_sequence_file_path, "r") as in_file:
         paths = in_file.readlines()
         paths = [p.strip() for p in paths]
@@ -252,6 +257,8 @@ def threaded_load_from_sequence(
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
+    paths_sequence = str(paths_sequence)
+
     stacks = []
     n_processes = get_num_processes(min_free_cpu_cores=n_free_cpus)
 
@@ -297,7 +304,6 @@ def load_from_paths_sequence(
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
-
     for i, p in enumerate(
         tqdm(paths_sequence, desc="Loading images", unit="plane")
     ):
@@ -337,6 +343,7 @@ def generate_paths_sequence_file(
     suffix=None,
     match_string=None,
 ):
+    input_folder = str(input_folder)
     paths = []
     for root, dirs, files in os.walk(input_folder):
         for filename in files:
@@ -365,9 +372,7 @@ def get_size_image_from_file_paths(file_path, file_extension="tif"):
      is passed)
     :return: Dict of image sizes
     """
-    # TODO: proper pathlib support
-    if isinstance(file_path, Path):
-        file_path = str(file_path)
+    file_path = str(file_path)
 
     img_paths = get_sorted_file_paths(file_path, file_extension=file_extension)
     z_shape = len(img_paths)
@@ -397,6 +402,7 @@ def to_nii(img, dest_path, scale=None, affine_transform=None):
         to save in the metadata of the image (required only if not nibabel input)
     :return:
     """
+    dest_path = str(dest_path)
     if affine_transform is None:
         affine_transform = np.eye(4)
     if not isinstance(img, nib.Nifti1Image):
@@ -417,6 +423,9 @@ def tiff_to_nii(src_path, dest_path, affine_transform=None):
         transformation to be associated with the nii
     :return:
     """
+    src_path = str(src_path)
+    dest_path = str(dest_path)
+
     if not dest_path.endswith(".nii.gz"):
         raise ValueError(
             'Path is expected to end in "nii.gz", got {} '
@@ -439,6 +448,9 @@ def nii_to_tiff(src_path, dest_path):
     :param str dest_path: The path to save the tiff stack to
     :return:
     """
+    src_path = str(src_path)
+    dest_path = str(dest_path)
+
     img = load_nii(src_path, as_array=True)
     tifffile.imsave(dest_path, img)
 
@@ -451,6 +463,7 @@ def to_tiff(img_volume, dest_path):
     :param dest_path: Where to save the tiff stack
     :return:
     """
+    dest_path = str(dest_path)
     tifffile.imsave(dest_path, img_volume)
 
 
