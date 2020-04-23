@@ -257,7 +257,6 @@ def threaded_load_from_sequence(
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
-    paths_sequence = str(paths_sequence)
 
     stacks = []
     n_processes = get_num_processes(min_free_cpu_cores=n_free_cpus)
