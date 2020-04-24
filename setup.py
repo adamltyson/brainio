@@ -16,7 +16,7 @@ requirements = [
 
 setup(
     name="brainio",
-    version="0.0.13",
+    version="0.0.14",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
     extras_require={
