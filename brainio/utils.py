@@ -4,10 +4,10 @@ import glob
 import psutil
 
 import numpy as np
+from scipy.ndimage import zoom
 
 from natsort import natsorted
 from slurmio import slurmio
-from skimage import transform
 
 
 class BrainIoLoadException(Exception):
@@ -47,9 +47,7 @@ def scale_z(volume, scaling_factor, verbose=False):
     if verbose:
         print("Scaling z dimension")
     volume = np.swapaxes(volume, 1, 2)
-    volume = transform.rescale(
-        volume, (1, scaling_factor, 1), preserve_range=True, multichannel=False
-    )
+    volume = zoom(volume, (1, scaling_factor, 1), order=1)
     return np.swapaxes(volume, 1, 2)
 
 
