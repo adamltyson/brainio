@@ -1,49 +1,83 @@
-language: python
-matrix:
-  include:
-  - os: linux
-    python: 3.6
-    dist: bionic
-    env: PIP_CMD='pip install -e .[dev]' TEST_CMD='tests/travis/testing.sh'
-  - os: linux
-    python: 3.7
-    dist: bionic
-    env: PIP_CMD='pip install -e .[dev]' TEST_CMD='tests/travis/testing.sh'
-  - os: linux
-    python: 3.8
-    dist: bionic
-    env: PIP_CMD='pip install -e .[dev]' TEST_CMD='tests/travis/testing.sh'
-before_install:
-- wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-- bash miniconda.sh -b -p $HOME/miniconda
-- export PATH="$HOME/miniconda/bin:$PATH"
-- hash -r
-- conda config --set always_yes yes --set changeps1 no
-- conda info -a
-install:
-- conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
-- source activate test-environment
-- $PIP_CMD
-- conda info -a
 after_success:
-- coveralls
-script:
-- travis_wait 40 bash $TEST_CMD
+  - pip install coveralls
+  - coveralls
+
+stages:
+  - test
+  - name: deploy
+    if:
+      tag IS present AND repo = adamltyson/brainio
+
+jobs:
+  include:
+    - stage: test
+      name: "Ubuntu Bionic python 3.6"
+      language: python
+      os: linux
+      dist: bionic
+      python: 3.6
+      script: travis_wait 40 bash travis/install_test_linux.sh
+    - stage: test
+      name: "Ubuntu Bionic python 3.7"
+      language: python
+      os: linux
+      dist: bionic
+      python: 3.7
+      script: travis_wait 40 bash travis/install_test_linux.sh
+    - stage: test
+      name: "Ubuntu Xenial python 3.6"
+      language: python
+      os: linux
+      dist: xenial
+      python: 3.6
+      script: travis_wait 40 bash travis/install_test_linux.sh
+    - stage: test
+      name: "Ubuntu Xenial python 3.7"
+      language: python
+      os: linux
+      dist: xenial
+      python: 3.7
+      script: travis_wait 40 bash travis/install_test_linux.sh
+    - stage: test
+      name: "Windows Python 3.6"
+      language: shell
+      env: TRAVIS_PYTHON_VERSION=3.6
+      os: windows
+      before_install: source travis/install_windows.sh
+      script: travis_wait 40 bash travis/test_windows.sh
+    - stage: test
+      name: "Windows Python 3.7"
+      language: shell
+      env: TRAVIS_PYTHON_VERSION=3.7
+      os: windows
+      before_install:
+        - source travis/install_windows.sh
+      script: travis_wait 40 bash travis/test_windows.sh
+    - stage: test
+      name: "macOS Python 3.6"
+      os: osx
+      language: shell
+      env: TRAVIS_PYTHON_VERSION=3.6
+      script: travis_wait 40 bash travis/install_test_osx.sh
+    - stage: test
+      name: "macOS Python 3.7"
+      os: osx
+      language: shell
+      env: TRAVIS_PYTHON_VERSION=3.7
+      script: travis_wait 40 bash travis/install_test_osx.sh
+    - stage: deploy
+      os: bionic
+      name: "Deploy Linux"
+      language: python
+      script: bash travis/deploy_linux.sh
 notifications:
   email:
     recipients:
     - adam.tyson@ucl.ac.uk
     on_success: change
     on_failure: always
-deploy:
-  - provider: pypi
-    user: __token__
-    password:
-      secure: MIqyueHKdOQJigPh7wonXCXPfvhSHJ8GWAa2OB+z164Csm+olsIXJR3/CPvqPLclt6GEfQ0aKh4BR2yisO6TqxZZnk/gEEGLG23nF4YQ4NHxvWn34e2bAwcEgPOEoKgK/Ox40VUmorDg5Q4L6GTD5dPkfKvb1zZL9ZU9P56U7B8ozVHrdyhRlMf3IDCMHa5RqHMrXfRxV0shZxHnLBBMgKRMNgfj+f79Kr+EPv9FqLok4xvXw1xXAv6eXtRpV032tAyrBSOa5FEGNlifxjNog0T/8MSHaICjZwUi9fUEfb7fTxo4nYlbZaN4a8B9xKu0mtUhbY2pQ1JK+p3M8UvE1hZfQmRaLPjGfBl/MYucuWTY7gI7ocGCaSY6neSmcbiDgvn2XT0DPd1RK4HOZOmSPT/fUGT4/i/g6a/6ut7Mm6WJXegMVP4SgLu+h7fIyHIR/rZi9okSz2m1mO4qljhV62C61AGDrLPIXLmXe5hfu33thM4a4SRxDzVrSh1kqaKeBqJxHPe0ylwRV0dzNAAmazuuJxYqtc+bwRK7/tt90wuC5mXP/NnGdsF+MBqroOw/uPKKYy1Y7+wlWaE6FwZQU09ZhxLrEm22k4Emcq5CeyCa0uRVnOb14ra0xA6YswfM81G4RxUlD4/QKB8MCoyt3NJxvZgnmCK8ADerdKEhoSs=
-    distributions: sdist bdist_wheel
-    skip_existing: true
-    on:
-      branch: master
-      tags: true
 
-
+env:
+  global:
+    - TWINE_USERNAME=__token__
+    # TWINE_PASSWORD is set to a PyPI API token in Travis settings

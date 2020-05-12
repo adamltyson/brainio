@@ -23,8 +23,7 @@ setup(
             "black",
             "pytest-cov",
             "pytest",
-            "coveralls",
-            "coverage<=4.5.4",
+            "coverage",
         ]
     },
     python_requires=">=3.6",
