@@ -19,14 +19,7 @@ setup(
     version="0.0.15rc0",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
-    extras_require={
-        "dev": [
-            "black",
-            "pytest-cov",
-            "pytest",
-            "coverage",
-        ]
-    },
+    extras_require={"dev": ["black", "pytest-cov", "pytest", "coverage",]},
     python_requires=">=3.6",
     packages=find_packages(),
     include_package_data=True,

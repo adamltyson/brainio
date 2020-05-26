@@ -49,4 +49,3 @@ def scale_z(volume, scaling_factor, verbose=False):
     volume = np.swapaxes(volume, 1, 2)
     volume = zoom(volume, (1, scaling_factor, 1), order=1)
     return np.swapaxes(volume, 1, 2)
-
