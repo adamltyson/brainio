@@ -10,6 +10,7 @@ requirements = [
     "natsort",
     "psutil",
     "slurmio",
+    "imlib",
     "nibabel >= 2.1.0",
 ]
 

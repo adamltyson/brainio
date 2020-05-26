@@ -16,12 +16,13 @@ import warnings
 import numpy as np
 
 from skimage import transform
-from pathlib import Path
 from tqdm import tqdm
 from natsort import natsorted
 from concurrent.futures import ProcessPoolExecutor
 
-from .utils import check_mem, scale_z, get_sorted_file_paths, get_num_processes
+from imlib.general.system import get_sorted_file_paths, get_num_processes
+
+from .utils import check_mem, scale_z
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -74,7 +75,7 @@ def load_any(
             src_path,
             x_scaling_factor,
             y_scaling_factor,
-            name_filter=".tif",
+            file_extension=".tif",
             load_parallel=load_parallel,
             n_free_cpus=n_free_cpus,
         )
@@ -159,7 +160,7 @@ def load_from_folder(
     src_folder,
     x_scaling_factor,
     y_scaling_factor,
-    name_filter="",
+    file_extension="",
     load_parallel=False,
     n_free_cpus=2,
 ):
@@ -175,19 +176,14 @@ def load_from_folder(
         dimension (applied on loading before return)
     :param float y_scaling_factor: The scaling of the brain along the y
         dimension (applied on loading before return)
-    :param str name_filter: will have to be present in the file names for them\
+    :param str file_extension: will have to be present in the file names for them\
         to be considered part of the sample
     :param bool load_parallel: Use multiprocessing to speedup image loading
     :param int n_free_cpus: Number of cpu cores to leave free.
     :return: The loaded and scaled brain
     :rtype: np.ndarray
     """
-    src_folder = str(src_folder)
-    paths = [
-        os.path.join(src_folder, fname)
-        for fname in sorted(os.listdir(src_folder))
-        if name_filter in fname
-    ]
+    paths = get_sorted_file_paths(src_folder, file_extension=file_extension)
 
     if load_parallel:
         return threaded_load_from_sequence(
