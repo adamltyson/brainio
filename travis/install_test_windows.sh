@@ -27,10 +27,19 @@ conda config --set always_yes yes --set changeps1 no;
 conda update -q conda;
 conda info -a
 
+#conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
+#source activate test-environment
+
+#pip install -e .[dev]
+#black .\ -l 79 --target-version py37 --check
+#imlib -h
+#pytest --cov=brainio
+
+
 conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
 source activate test-environment
-
 pip install -e .[dev]
-black .\ -l 79 --target-version py37 --check
+conda info -a
+black ./ -l 79 --target-version py37 --check
 imlib -h
 pytest --cov=brainio
