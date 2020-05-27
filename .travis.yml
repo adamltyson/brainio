@@ -81,7 +81,7 @@ jobs:
       name: "Deploy Linux"
       language: python
       before_install: source travis/install_unix.sh
-      script: bash travis/test.sh
+      script: bash travis/deploy_linux.sh
 notifications:
   email:
     recipients:
