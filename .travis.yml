@@ -48,15 +48,13 @@ jobs:
       language: shell
       env: TRAVIS_PYTHON_VERSION=3.6
       os: windows
-      before_install: source travis/install_windows.sh
-      script: bash travis/test_windows.sh
+      script: bash travis/install_test_windows.sh
     - stage: test
       name: "Windows Python 3.7"
       language: shell
       env: TRAVIS_PYTHON_VERSION=3.7
       os: windows
-      before_install: source travis/install_windows.sh
-      script: bash travis/test_windows.sh
+      script: bash travis/install_test_windows.sh
     - stage: test
       name: "macOS Python 3.6"
       os: osx
