@@ -65,14 +65,18 @@ jobs:
       name: "macOS Python 3.6"
       os: osx
       language: shell
-      env: TRAVIS_PYTHON_VERSION=3.6
+      env:
+      - TRAVIS_PYTHON_VERSION=3.6
+      - MINICONDA_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
       before_install: source travis/install_osx.sh
       script: bash travis/test_unix.sh
     - stage: test
       name: "macOS Python 3.7"
       os: osx
       language: shell
-      env: TRAVIS_PYTHON_VERSION=3.7
+      env:
+      - TRAVIS_PYTHON_VERSION=3.7
+      - MINICONDA_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
       before_install: source travis/install_osx.sh
       script: bash travis/test_unix.sh
     - stage: deploy
