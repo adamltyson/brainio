@@ -18,7 +18,8 @@ jobs:
       env: MINICONDA_URL=http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: bionic
       python: 3.6
-      script: bash travis/install_test_unix.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
     - stage: test
       name: "Ubuntu Bionic python 3.7"
       language: python
@@ -26,7 +27,8 @@ jobs:
       env: MINICONDA_URL=http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: bionic
       python: 3.7
-      script: bash travis/install_test_unix.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
     - stage: test
       name: "Ubuntu Xenial python 3.6"
       language: python
@@ -34,7 +36,8 @@ jobs:
       env: MINICONDA_URL=http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: xenial
       python: 3.6
-      script: bash travis/install_test_unix.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
     - stage: test
       name: "Ubuntu Xenial python 3.7"
       language: python
@@ -42,7 +45,8 @@ jobs:
       env: MINICONDA_URL=http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: xenial
       python: 3.7
-      script: bash travis/install_test_unix.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
     - stage: test
       name: "Windows Python 3.6"
       language: shell
@@ -70,12 +74,14 @@ jobs:
       env:
       - TRAVIS_PYTHON_VERSION=3.7
       - MINICONDA_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-      script: bash travis/install_test_unix.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
     - stage: deploy
       os: bionic
       name: "Deploy Linux"
       language: python
-      script: bash travis/deploy_linux.sh
+      before_install: source travis/install_unix.sh
+      script: bash travis/test.sh
 notifications:
   email:
     recipients:
