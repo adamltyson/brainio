@@ -8,12 +8,14 @@ stages:
     if:
       tag IS present AND repo = adamltyson/brainio
 
+
 jobs:
   include:
     - stage: test
       name: "Ubuntu Bionic python 3.6"
       language: python
       os: linux
+      env: MINICONDA_URL = http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: bionic
       python: 3.6
       before_install: source travis/install_linux.sh
@@ -22,6 +24,7 @@ jobs:
       name: "Ubuntu Bionic python 3.7"
       language: python
       os: linux
+      env: MINICONDA_URL = http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: bionic
       python: 3.7
       before_install: source travis/install_linux.sh
@@ -30,6 +33,7 @@ jobs:
       name: "Ubuntu Xenial python 3.6"
       language: python
       os: linux
+      env: MINICONDA_URL = http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: xenial
       python: 3.6
       before_install: source travis/install_linux.sh
@@ -38,6 +42,7 @@ jobs:
       name: "Ubuntu Xenial python 3.7"
       language: python
       os: linux
+      env: MINICONDA_URL = http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
       dist: xenial
       python: 3.7
       before_install: source travis/install_linux.sh
