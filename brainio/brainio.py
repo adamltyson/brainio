@@ -92,7 +92,9 @@ def load_any(
         )
     elif src_path.endswith((".tif", ".tiff")):
         logging.debug("Data type is: tif stack")
-        img = load_img_stack(src_path)
+        img = load_img_stack(
+            src_path, x_scaling_factor, y_scaling_factor, z_scaling_factor
+        )
     elif src_path.endswith(".nrrd"):
         logging.debug("Data type is: nrrd")
         img = load_nrrd(src_path)
@@ -141,7 +143,10 @@ def load_img_stack(
 
     if not (x_scaling_factor == y_scaling_factor == z_scaling_factor == 1):
         stack = transform.rescale(
-            stack, (0.2, 0.2, 0.2), mode="constant", preserve_range=True
+            stack,
+            (x_scaling_factor, y_scaling_factor, z_scaling_factor),
+            mode="constant",
+            preserve_range=True,
         )
 
     return stack
