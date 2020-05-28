@@ -29,7 +29,7 @@ def test_tiff_io(tmpdir, layer):
 def test_to_tiffs(tmpdir, start_array):
     folder = str(tmpdir)
     brainio.to_tiffs(start_array, os.path.join(folder, "start_array"))
-    reloaded_array = brainio.load_from_folder(folder, 1, 1)
+    reloaded_array = brainio.load_from_folder(folder, 1, 1, 1)
     assert (reloaded_array == start_array).all()
 
 
@@ -45,7 +45,7 @@ def test_load_img_sequence(tmpdir, start_array):
             ]
         )
     )
-    reloaded_array = brainio.load_img_sequence(str(img_sequence_file), 1, 1)
+    reloaded_array = brainio.load_img_sequence(str(img_sequence_file), 1, 1, 1)
     assert (reloaded_array == start_array).all()
 
 

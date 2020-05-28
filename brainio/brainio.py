@@ -75,6 +75,7 @@ def load_any(
             src_path,
             x_scaling_factor,
             y_scaling_factor,
+            z_scaling_factor,
             file_extension=".tif",
             load_parallel=load_parallel,
             n_free_cpus=n_free_cpus,
@@ -85,6 +86,7 @@ def load_any(
             src_path,
             x_scaling_factor,
             y_scaling_factor,
+            z_scaling_factor,
             load_parallel=load_parallel,
             sort=sort_input_file,
             n_free_cpus=n_free_cpus,
@@ -102,8 +104,7 @@ def load_any(
         raise NotImplementedError(
             "Could not guess data type for path {}".format(src_path)
         )
-    if z_scaling_factor != 1:
-        img = scale_z(img, z_scaling_factor, verbose=verbose)
+
     return img
 
 
@@ -160,6 +161,7 @@ def load_from_folder(
     src_folder,
     x_scaling_factor,
     y_scaling_factor,
+    z_scaling_factor,
     file_extension="",
     load_parallel=False,
     n_free_cpus=2,
@@ -176,6 +178,8 @@ def load_from_folder(
         dimension (applied on loading before return)
     :param float y_scaling_factor: The scaling of the brain along the y
         dimension (applied on loading before return)
+    :param float z_scaling_factor: The scaling of the brain along the z
+        dimension
     :param str file_extension: will have to be present in the file names for them\
         to be considered part of the sample
     :param bool load_parallel: Use multiprocessing to speedup image loading
@@ -185,20 +189,21 @@ def load_from_folder(
     """
     paths = get_sorted_file_paths(src_folder, file_extension=file_extension)
 
-    if load_parallel:
-        return threaded_load_from_sequence(
-            paths, x_scaling_factor, y_scaling_factor, n_free_cpus=n_free_cpus
-        )
-    else:
-        return load_from_paths_sequence(
-            paths, x_scaling_factor, y_scaling_factor
-        )
+    return load_image_series(
+        paths,
+        x_scaling_factor,
+        y_scaling_factor,
+        z_scaling_factor,
+        load_parallel=load_parallel,
+        n_free_cpus=n_free_cpus,
+    )
 
 
 def load_img_sequence(
     img_sequence_file_path,
     x_scaling_factor,
     y_scaling_factor,
+    z_scaling_factor,
     load_parallel=False,
     sort=False,
     n_free_cpus=2,
@@ -213,6 +218,8 @@ def load_img_sequence(
         dimension (applied on loading before return)
     :param float y_scaling_factor: The scaling of the brain along the y
         dimension (applied on loading before return)
+    :param float z_scaling_factor: The scaling of the brain along the z
+        dimension
     :param bool load_parallel: Use multiprocessing to speedup image loading
     :param bool sort: If set to true will perform a natural sort of the
         file paths in the list
@@ -227,14 +234,54 @@ def load_img_sequence(
     if sort:
         paths = natsorted(paths)
 
+    return load_image_series(
+        paths,
+        x_scaling_factor,
+        y_scaling_factor,
+        z_scaling_factor,
+        load_parallel=load_parallel,
+        n_free_cpus=n_free_cpus,
+    )
+
+
+def load_image_series(
+    paths,
+    x_scaling_factor,
+    y_scaling_factor,
+    z_scaling_factor,
+    load_parallel=False,
+    n_free_cpus=2,
+):
+    """
+    Load a brain from a sequence of files specified in a text file containing
+    an ordered list of paths
+
+    :param lost paths: Ordered list of image paths
+    :param float x_scaling_factor: The scaling of the brain along the x
+        dimension (applied on loading before return)
+    :param float y_scaling_factor: The scaling of the brain along the y
+        dimension (applied on loading before return)
+    :param float z_scaling_factor: The scaling of the brain along the z
+        dimension
+    :param bool load_parallel: Use multiprocessing to speedup image loading
+
+    :param int n_free_cpus: Number of cpu cores to leave free.
+    :return: The loaded and scaled brain
+    :rtype: np.ndarray
+    """
+
     if load_parallel:
-        return threaded_load_from_sequence(
+        img = threaded_load_from_sequence(
             paths, x_scaling_factor, y_scaling_factor, n_free_cpus=n_free_cpus
         )
     else:
-        return load_from_paths_sequence(
+        img = load_from_paths_sequence(
             paths, x_scaling_factor, y_scaling_factor
         )
+    if z_scaling_factor != 1:
+        img = scale_z(img, z_scaling_factor)
+
+    return img
 
 
 def threaded_load_from_sequence(
