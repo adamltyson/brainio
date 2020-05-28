@@ -35,17 +35,15 @@ def check_mem(img_byte_size, n_imgs):
         )
 
 
-def scale_z(volume, scaling_factor, verbose=False):
+def scale_z(volume, scaling_factor):
     """
     Scale the given brain along the z dimension
 
     :param np.ndarray volume: A brain typically as a numpy array
     :param float scaling_factor:
-    :param bool verbose:
     :return:
     """
-    if verbose:
-        print("Scaling z dimension")
+
     volume = np.swapaxes(volume, 1, 2)
     volume = zoom(volume, (1, scaling_factor, 1), order=1)
     return np.swapaxes(volume, 1, 2)

@@ -38,7 +38,6 @@ def load_any(
     load_parallel=False,
     sort_input_file=False,
     as_numpy=False,
-    verbose=False,
     n_free_cpus=2,
 ):
     """
