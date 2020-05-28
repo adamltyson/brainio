@@ -89,7 +89,7 @@ def load_any(
             sort=sort_input_file,
             n_free_cpus=n_free_cpus,
         )
-    elif src_path.endswith(".tif"):
+    elif src_path.endswith((".tif", ".tiff")):
         logging.debug("Data type is: tif stack")
         img = load_img_stack(src_path)
     elif src_path.endswith(".nrrd"):
