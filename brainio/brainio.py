@@ -120,16 +120,30 @@ def load_nrrd(src_path):
     return stack
 
 
-def load_img_stack(stack_path):
+def load_img_stack(
+    stack_path, x_scaling_factor, y_scaling_factor, z_scaling_factor,
+):
     """
     Load a tiff stack as a numpy array
 
     :param str stack_path: The path of the image to be loaded
+    :param float x_scaling_factor: The scaling of the brain along the x
+        dimension (applied on loading before return)
+    :param float y_scaling_factor: The scaling of the brain along the y
+        dimension (applied on loading before return)
+    :param float z_scaling_factor: The scaling of the brain along the z
+        dimension (applied on loading before return)
     :return: The loaded brain array
     :rtype: np.ndarray
     """
     stack_path = str(stack_path)
     stack = tifffile.imread(stack_path)
+
+    if not (x_scaling_factor == y_scaling_factor == z_scaling_factor == 1):
+        stack = transform.rescale(
+            stack, (0.2, 0.2, 0.2), mode="constant", preserve_range=True
+        )
+
     return stack
 
 

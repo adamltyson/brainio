@@ -62,7 +62,7 @@ def test_nii_to_tiff(tmpdir, start_array):
 
     brainio.to_nii(start_array, nii_path)
     brainio.nii_to_tiff(nii_path, tiff_path)
-    test_array = brainio.load_img_stack(tiff_path)
+    test_array = brainio.load_img_stack(tiff_path, 1, 1, 1)
     assert (test_array == start_array).all()
 
 
