@@ -179,6 +179,7 @@ def load_img_stack(
         logging.debug("Converting downsampled stack to array")
         stack = np.array(downsampled_stack)
 
+    stack = np.rollaxis(stack, 0, 3)
     if z_scaling_factor != 1:
         logging.debug("Downsampling stack in Z")
         stack = scale_z(stack, z_scaling_factor)
