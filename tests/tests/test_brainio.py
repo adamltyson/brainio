@@ -56,16 +56,6 @@ def test_to_nii(tmpdir, start_array):  # Also tests load_nii
     assert (brainio.load_nii(nii_path).get_data() == start_array).all()
 
 
-def test_nii_to_tiff(tmpdir, start_array):
-    nii_path = os.path.join(str(tmpdir), "test_array.nii.gz")
-    tiff_path = os.path.join(str(tmpdir), "test_array.tiff")
-
-    brainio.to_nii(start_array, nii_path)
-    brainio.nii_to_tiff(nii_path, tiff_path)
-    test_array = brainio.load_img_stack(tiff_path, 1, 1, 1)
-    assert (test_array == start_array).all()
-
-
 def test_tiff_to_nii(tmpdir, start_array):
     tiffs_folder = str(tmpdir.mkdir("tiffs"))
     brainio.to_tiffs(start_array, os.path.join(tiffs_folder, "start_array"))

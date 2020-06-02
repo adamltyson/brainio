@@ -252,7 +252,7 @@ def load_from_folder(
         z_scaling_factor,
         load_parallel=load_parallel,
         n_free_cpus=n_free_cpus,
-        anti_aliasing=anti_aliasing
+        anti_aliasing=anti_aliasing,
     )
 
 
@@ -302,7 +302,7 @@ def load_img_sequence(
         z_scaling_factor,
         load_parallel=load_parallel,
         n_free_cpus=n_free_cpus,
-        anti_aliasing=anti_aliasing
+        anti_aliasing=anti_aliasing,
     )
 
 
@@ -567,21 +567,6 @@ def tiff_to_nii(src_path, dest_path, affine_transform=None):
     if not isinstance(img, nib.Nifti1Image):
         img = nib.Nifti1Image(img, affine_transform)
     nib.save(img, os.path.normpath(dest_path))
-
-
-def nii_to_tiff(src_path, dest_path):
-    """
-    Load a nifty image and save it as a single tiff stack
-
-    :param str src_path: The path of the source nifty image to load
-    :param str dest_path: The path to save the tiff stack to
-    :return:
-    """
-    src_path = str(src_path)
-    dest_path = str(dest_path)
-
-    img = load_nii(src_path, as_array=True)
-    tifffile.imsave(dest_path, img)
 
 
 def to_tiff(img_volume, dest_path):
