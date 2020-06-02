@@ -251,6 +251,7 @@ def load_from_folder(
         z_scaling_factor,
         load_parallel=load_parallel,
         n_free_cpus=n_free_cpus,
+        anti_aliasing=anti_aliasing
     )
 
 
@@ -300,6 +301,7 @@ def load_img_sequence(
         z_scaling_factor,
         load_parallel=load_parallel,
         n_free_cpus=n_free_cpus,
+        anti_aliasing=anti_aliasing
     )
 
 
