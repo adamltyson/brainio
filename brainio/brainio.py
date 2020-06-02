@@ -156,17 +156,32 @@ def load_img_stack(
     :rtype: np.ndarray
     """
     stack_path = str(stack_path)
+    logging.debug(f"Loading: {stack_path}")
     stack = tifffile.imread(stack_path)
 
-    if not (x_scaling_factor == y_scaling_factor == z_scaling_factor == 1):
-        stack = transform.rescale(
-            stack,
-            (x_scaling_factor, y_scaling_factor, z_scaling_factor),
-            mode="constant",
-            preserve_range=True,
-            anti_aliasing=anti_aliasing,
-        )
+    # Downsampled plane by plane because the 3D downsampling in scipy etc
+    # uses too much RAM
 
+    if not (x_scaling_factor == y_scaling_factor == 1):
+        downsampled_stack = []
+        logging.debug("Downsampling stack in X/Y")
+        for plane in tqdm(range(0, len(stack))):
+            downsampled_stack.append(
+                transform.rescale(
+                    stack[plane],
+                    (y_scaling_factor, x_scaling_factor),
+                    mode="constant",
+                    preserve_range=True,
+                    anti_aliasing=anti_aliasing,
+                )
+            )
+
+        logging.debug("Converting downsampled stack to array")
+        stack = np.array(downsampled_stack)
+
+    if z_scaling_factor != 1:
+        logging.debug("Downsampling stack in Z")
+        stack = scale_z(stack, z_scaling_factor)
     return stack
 
 
@@ -319,11 +334,18 @@ def load_image_series(
 
     if load_parallel:
         img = threaded_load_from_sequence(
-            paths, x_scaling_factor, y_scaling_factor, n_free_cpus=n_free_cpus
+            paths,
+            x_scaling_factor,
+            y_scaling_factor,
+            n_free_cpus=n_free_cpus,
+            anti_aliasing=anti_aliasing,
         )
     else:
         img = load_from_paths_sequence(
-            paths, x_scaling_factor, y_scaling_factor
+            paths,
+            x_scaling_factor,
+            y_scaling_factor,
+            anti_aliasing=anti_aliasing,
         )
     if z_scaling_factor != 1:
         img = scale_z(img, z_scaling_factor)
@@ -377,6 +399,7 @@ def threaded_load_from_sequence(
             sub_paths,
             x_scaling_factor,
             y_scaling_factor,
+            anti_aliasing=anti_aliasing,
         )
         stacks.append(process)
     stack = np.dstack([s.result() for s in stacks])
