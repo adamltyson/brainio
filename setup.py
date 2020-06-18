@@ -9,14 +9,14 @@ requirements = [
     "tqdm",
     "natsort",
     "psutil",
-    "slurmio",
+    "slurmio >= 0.0.5",
     "imlib",
     "nibabel >= 2.1.0",
 ]
 
 setup(
     name="brainio",
-    version="0.0.19",
+    version="0.0.20",
     description="Loading and saving of brain imaging data.",
     install_requires=requirements,
     extras_require={"dev": ["black", "pytest-cov", "pytest", "coverage",]},
